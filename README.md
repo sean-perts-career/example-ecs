@@ -56,7 +56,7 @@ example_ecs/
   a. Navigate to the `aws-cdk` directory \
   b. Run `npx cdk --profile <YOUR_PROFILE> -c config=dev deploy --all` \
   c. Once the deployment is underway type `y` to accept the changes for each of the two following stacks, at the end there will be an output for the ALB DNS Endpoint \
-  d. Copy and paste the ALB DNS Endpoint into a browser and the nginx server display should appear
+  d. Copy and paste the ALB DNS Endpoint into a browser and the nginx server display should appear, make sure to connect over HTTPS
 
 ## Cleanup Procedure ##
 1. Remove scale-in protection for EC2 instances apart of the ASG \
@@ -84,6 +84,7 @@ example_ecs/
 ## Possible Enhancements ##
 * Migrating the CDK context management to another approach, perhaps using a dynamically generated context
 * Setting up an actual CI/CD pipeline would make orchestrating vastly easier
+* Configuring TLS certs and DNS Routing
 
 ## Architecture ##
 * ECR Stack
