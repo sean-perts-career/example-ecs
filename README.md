@@ -1,8 +1,34 @@
-# Welcome to your CDK TypeScript project
+# Example ECS 
 
-This is a blank project for CDK development with TypeScript.
+This is a demostration project which creates an ECS cluster with EC2 workers, that deploys a simple nginx web app. Utilizing CDK development with TypeScript.
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
+
+## Directory Structure ##
+```
+example_ecs/
+├── .gitignore
+├── README.md
+├── app                   // Sample 'Hello-World' application
+    ├── Dockerfile        // Application Dockerfile
+    ├── helloworld.conf   // nginx configuration
+    └── index.html        // HTML configuration
+├── aws-cdk               // Top level directory to contain the CDK configuration
+    ├── bin               // Contains the CDK entrypoint
+        ├── infra.ts      // Entrypoint
+    ├── lib               // Contains CDK library resources
+        ├── context.ts    // Contains helper functions to process CDK context
+        ├── ecr-stack.ts  // Contains resources for the ECR stack
+        ├── ecs-stack.ts  // Contains resources for the ECS stack
+        └── vpc-stack.ts  // Contains resources for the VPC stack
+    ├── .prettierrc       // Code formatter 'prettier' config file
+    ├── cdk.json          // Primary CDK context file
+    ├── package.json      // Node.js metadata file
+    ├── package-lock.json // Lock file package.json
+    └── tsconfig.json     // Typescript config file
+
+
+```
 
 ## Useful commands
 
