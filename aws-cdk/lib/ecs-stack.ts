@@ -35,6 +35,7 @@ export class EcsStack extends Stack {
   constructor(scope: Construct, context: contextConfig, id: string, props: EcsStackProps) {
     super(scope, id, props);
 
+    // Setup ASG constructs
     this.alb = new ApplicationLoadBalancer(this, 'Alb', {
       vpc: props.vpc,
       internetFacing: true
@@ -50,11 +51,13 @@ export class EcsStack extends Stack {
     });
     this.asg.connections.allowFrom(this.alb, Port.tcp(80));
 
+    // Setup ECS constructs
     this.ecsCluster = new Cluster(this, 'EcsCluster', {
       clusterName: 'sean-example-ecs',
       enableFargateCapacityProviders: false,
       vpc: props.vpc
     });
+
     const capacityProvider = new AsgCapacityProvider(this, 'AsgCapacityProvider', {
       autoScalingGroup: this.asg,
       capacityProviderName: 'capacity-provider'
@@ -67,21 +70,25 @@ export class EcsStack extends Stack {
         ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy')
       ]
     });
+
     const task = new TaskDefinition(this, 'EcsTaskDefinition', {
       compatibility: Compatibility.EC2,
       executionRole: ecsExecutionRole
     });
+
     const containerDefinition = task.addContainer('EcsTaskContainer', {
       image: ContainerImage.fromRegistry(`${props.ecrRepo.repositoryUri}:${context.imageTag}`),
       memoryLimitMiB: 256,
       containerName: 'sean-nginx'
     });
+
     containerDefinition.addPortMappings({
       containerPort: 80,
       hostPort: 80,
       appProtocol: AppProtocol.http,
       name: 'http-access'
     });
+
     this.ecsService = new Ec2Service(this, 'EcsService', {
       cluster: this.ecsCluster,
       taskDefinition: task,
@@ -89,10 +96,12 @@ export class EcsStack extends Stack {
       enableExecuteCommand: true
     });
 
+    // Setup ALB constructs
     const listener = this.alb.addListener('AlbListener', {
       port: 80,
       open: true
     });
+
     this.ecsService.registerLoadBalancerTargets({
       containerName: 'sean-nginx',
       containerPort: 80,
